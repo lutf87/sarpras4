@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KategoriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,12 @@ Route::get('/', function () {
 });
 
 Route::get('dashboard', [DashboardController::class, 'index']);
+
+
+Route::prefix('admin')->group(function () {
+    Route::prefix('kategori')->group(function () {
+        Route::get('/', [KategoriController::class, 'index'])->name('kategori.index');
+        Route::get('tambah', [KategoriController::class, 'create'])->name('kategori.create');
+        Route::post('/', [KategoriController::class, 'store'])->name('kategori.store');
+    });
+});

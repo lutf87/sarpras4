@@ -16,7 +16,7 @@
                 <label for="namaProduk">Nama Produk</label>
             </div>
             <div class="form-floating mb-3">
-                <input class="form-control" id="kodeProduk" type="text" placeholder="Masukkan Kode Produk" />
+                <input class="form-control" id="kodeProduk" type="text" placeholder="Masukkan Kode Produk" value="STIMATA-<?=date("Y");?><?=random_string('numeric', 8);?>" />
                 <label for="kodeProduk">Kode Produk</label>
             </div>
             <div class="form-floating mb-3">
