@@ -60,9 +60,11 @@
                             @endforelse
                         </tbody>
                     </table>
-                    {{ $datas->links() }}
                 </div>
             </div>
+        </div>
+        <div class="d-fex mt-2">
+            {!! $datas->links() !!}
         </div>
     </div>
     <script>

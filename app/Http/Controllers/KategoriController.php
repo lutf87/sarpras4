@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Brian2694\Toastr\Facades\Toastr;
 
 class KategoriController extends Controller
 {
@@ -14,7 +15,7 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        $datas = Kategori::orderBy('nama_kategori', 'asc')->paginate(5);
+        $datas = Kategori::paginate(5);
         return view('admin.kategori.index', compact('datas'));
     }
 
@@ -42,20 +43,24 @@ class KategoriController extends Controller
                 'kode_kategori' => 'unique:kategoris,kode_kategori|required',
             ],
             [
-                'kode_kategori.unique' => 'Kode ini sudah ada'
+                'nama_kategori' => 'Nama kategori harus diisi',
+                'kode_kategori' => 'Kode kategori harus diisi',
+                'kode_kategori.unique' => 'Kode Kategori ini sudah ada'
             ]
         );
 
         Kategori::create(
             [
                 'nama_kategori' => $request->nama_kategori,
-                'kode_kategori' => $request->input('kode_kategori')
+                'kode_kategori' => $request->kode_kategori
             ]
         );
 
         if (!$request) {
-            return redirect()->route('kategori.create')->with(['error' => 'Data gagal disimpan!']);
+            Toastr::error('Data gagal Disimpan', 'Gagal', ["positionClass" => "toast-top-full-width"]);
+            return redirect()->route('kategori.create');
         } else {
+            Toastr::success('Data berhasil Disimpan', 'Berhasil', ["positionClass" => "toast-top-center"]);
             return redirect()->route('kategori.index')->with(['success' => 'Data berhasil disimpan!']);
         }
     }
@@ -68,7 +73,7 @@ class KategoriController extends Controller
      */
     public function show(Kategori $kategori)
     {
-        
+
     }
 
     /**
