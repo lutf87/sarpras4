@@ -40,16 +40,20 @@
                         <tbody>
                             @forelse ($datas as $data)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $data->nama_kategori }}</td>
+                                    <td>{{ $no++ }}</td>
                                     <td>{{ $data->kode_kategori }}</td>
+                                    <td>{{ $data->nama_kategori }}</td>
                                     <td>
-                                        <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="#"
-                                            method="POST">
-                                            <a href="#" class="btn btn-sm btn-primary">Ubah</a>
+                                        <form onsubmit="return confirm('Apakah Anda Yakin ?');"
+                                            action="{{ route('kategori.destroy', $data->id) }}" method="POST">
+                                            <a href="{{ route('kategori.edit', $data->id) }}" class="btn btn-sm btn-primary">Ubah</a>
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                            {{-- <button type="submit" class="btn btn-sm btn-danger">Hapus</button> --}}
+                                            <input name="_method" type="hidden" value="DELETE">
+                                            <button type="submit"
+                                                class="btn btn-sm btn-danger btn-flat show-alert-delete-box btn-sm"
+                                                data-toggle="tooltip" title='Delete'>Hapus</button>
                                         </form>
                                     </td>
                                 </tr>

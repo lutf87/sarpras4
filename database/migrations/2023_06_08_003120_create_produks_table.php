@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('kategori_id');
             $table->foreign('kategori_id')->references('id')->on('kategoris');
             $table->string('harga_beli', 12);
+            $table->string('satuan', 25)->nullable();
             $table->string('tgl_beli', 15);
             $table->string('jumlah', 10);
             $table->string('gambar', 50);

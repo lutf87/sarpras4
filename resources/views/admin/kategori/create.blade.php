@@ -4,7 +4,7 @@
 @section('page-title', 'Tambah Kategori')
 @section('contents')
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="card border-0 shadow rounded">
                 <div class="card-header">
                     <h3 class="card-title">Tambah Data Kategori</h3>
@@ -18,7 +18,7 @@
                                 <div class="form-group">
                                     <label for="kode_kategori">Kode Kategori</label>
                                     <input type="text" id="kode_kategori" name="kode_kategori"
-                                        class="form-control @error('kode_kategori') is-invalid @enderror">
+                                        class="form-control @error('kode_kategori') is-invalid @enderror" autofocus>
                                 </div>
                                 <div class="form-group">
                                     <label for="nama_kategori">Nama Kategori</label>

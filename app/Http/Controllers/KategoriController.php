@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
+use Dotenv\Validator;
 
 class KategoriController extends Controller
 {
@@ -16,7 +17,7 @@ class KategoriController extends Controller
     public function index()
     {
         $datas = Kategori::paginate(5);
-        return view('admin.kategori.index', compact('datas'));
+        return view('admin.kategori.index', compact('datas'))->with('no', 1);
     }
 
     /**
@@ -37,22 +38,29 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
+
+        // Validator::extend('without_spaces', function ($attribute, $value) {
+        //     return preg_match('/^[\pL\s]+$/u', $value);
+        // });
+
         $request->validate(
             [
                 'nama_kategori' => 'required',
-                'kode_kategori' => 'unique:kategoris,kode_kategori|required',
+                'kode_kategori' => 'unique:kategoris,kode_kategori|required|regex:/^\S*$/u',
             ],
             [
                 'nama_kategori' => 'Nama kategori harus diisi',
                 'kode_kategori' => 'Kode kategori harus diisi',
-                'kode_kategori.unique' => 'Kode Kategori ini sudah ada'
+                'kode_kategori.unique' => 'Kode Kategori ini sudah ada',
+                'kode_kategori.regex' => 'Maaf kode kategori tidak boleh ada spasi'
             ]
         );
+        $kode = "STIMATA-SP-";
 
         Kategori::create(
             [
-                'nama_kategori' => $request->nama_kategori,
-                'kode_kategori' => $request->kode_kategori
+                'nama_kategori' => $request->input('nama_kategori'),
+                'kode_kategori' => strtoupper($kode . $request->input('kode_kategori'))
             ]
         );
 
@@ -73,7 +81,6 @@ class KategoriController extends Controller
      */
     public function show(Kategori $kategori)
     {
-
     }
 
     /**
@@ -82,9 +89,10 @@ class KategoriController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function edit(Kategori $kategori)
+    public function edit($id)
     {
-        //
+        $kategori = Kategori::findOrFail($id);
+        return view('admin.kategori.edit', compact('kategori'));
     }
 
     /**
@@ -94,9 +102,29 @@ class KategoriController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Kategori $kategori)
+    public function update(Request $request, $id)
     {
-        //
+        $kategori = Kategori::findOrFail($id);
+        $request->validate(
+            [
+                'kode_kategori' => 'unique:kategoris,kode_kategori|required',
+                'nama_kategori' => 'required'
+            ],
+            [
+                'kode_kategori' => 'Kode Kategori Harus Diisi',
+                'nama_kategori' => 'Nama Katogori Harus Diisi',
+                'kode_kategori.unique' => 'Kode tersebut sudah digunakan!'
+            ]
+        );
+        $kategori->fill($request->post())->save();
+
+        if (!$request) {
+            Toastr::error('Data gagal Disimpan', 'Gagal', ["positionClass" => "toast-top-full-width"]);
+            return redirect()->route('kategori.create');
+        } else {
+            Toastr::success('Data berhasil Disimpan', 'Berhasil', ["positionClass" => "toast-top-center"]);
+            return redirect()->route('kategori.index')->with(['success' => 'Data berhasil disimpan!']);
+        }
     }
 
     /**
@@ -105,8 +133,11 @@ class KategoriController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kategori $kategori)
+    public function destroy($id)
     {
-        //
+        $kategori = Kategori::findOrFail($id);
+        $kategori->delete();
+        Toastr::success('Kategori berhasil Dihapus', 'Berhasil', ["positionClass" => "toast-top-center"]);
+        return redirect()->route('kategori.index');
     }
 }
